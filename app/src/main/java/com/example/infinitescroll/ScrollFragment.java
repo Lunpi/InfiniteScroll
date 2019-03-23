@@ -22,13 +22,13 @@ import static android.view.View.GONE;
 
 public class ScrollFragment extends Fragment {
     private ProgressBar mLoading;
-    private TitleImageApartAdapter mContentAdapter;
+    private ContentAdapter mContentAdapter;
     private ContentViewModel mModel;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContentAdapter = new TitleImageApartAdapter(getContext());
+        mContentAdapter = new ContentAdapter(getContext());
         mModel = ViewModelProviders.of(this).get(ContentViewModel.class);
         mModel.getPosts().observe(this, new Observer<ArrayList<RedditPost>>() {
             @Override

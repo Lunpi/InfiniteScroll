@@ -14,10 +14,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ContentViewModel extends ViewModel {
+class ContentViewModel extends ViewModel {
     private MutableLiveData<ArrayList<RedditPost>> mPosts = new MutableLiveData<ArrayList<RedditPost>>();
 
-    public MutableLiveData<ArrayList<RedditPost>> getPosts() {
+    MutableLiveData<ArrayList<RedditPost>> getPosts() {
         fetchPosts();
         return mPosts;
     }

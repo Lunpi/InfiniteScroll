@@ -1,5 +1,7 @@
 package com.example.infinitescroll.reddit;
 
+import com.example.infinitescroll.ContentAdapter;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -7,9 +9,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class RedditPost {
-    public String mTitle;
-    public String mThumbnail;
-    public String mName;
+    private String mTitle;
+    private String mThumbnail;
+    private String mName;
+    private int mLayoutType;
     
     public String getTitle() {
         return mTitle;
@@ -23,6 +26,10 @@ public class RedditPost {
         return mName;
     }
     
+    public int getLayoutType() {
+        return mLayoutType;
+    }
+    
     public static RedditPost parseJson(JSONObject json) {
         RedditPost post = new RedditPost();
         try {
@@ -32,8 +39,11 @@ public class RedditPost {
             try {
                 post.mThumbnail = json.getString("thumbnail");
             } catch (JSONException e) {
-                post.mThumbnail = "";
+                post.mThumbnail = "default";
             }
+            post.mLayoutType = ("self".equals(post.mThumbnail) || "default".equals(post.mThumbnail)) ?
+                    ContentAdapter.LAYOUT_TITLE_BESIDE_THUMBNAIL :
+                    ContentAdapter.LAYOUT_TITLE_OVER_THUMBNAIL;
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
