@@ -7,12 +7,25 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "reddit_post_table")
 public class RedditPost {
+    @PrimaryKey
+    @NonNull
+    private String mId = "";
     private String mTitle;
     private String mThumbnail;
     private String mName;
     private int mLayoutType;
+    
+    public String getId() {
+        return mId;
+    }
     
     public String getTitle() {
         return mTitle;
@@ -30,9 +43,30 @@ public class RedditPost {
         return mLayoutType;
     }
     
+    public void setId(String id) {
+        mId = id;
+    }
+    
+    public void setTitle(String title) {
+        mTitle = title;
+    }
+    
+    public void setThumbnail(String thumbnail) {
+        mThumbnail = thumbnail;
+    }
+    
+    public void setName(String name) {
+        mName = name;
+    }
+    
+    public void setLayoutType(int layoutType) {
+        mLayoutType = layoutType;
+    }
+    
     public static RedditPost parseJson(JSONObject json) {
         RedditPost post = new RedditPost();
         try {
+            post.mId = json.getString("id");
             post.mTitle = json.getString("title");
             post.mName = json.getString("name");
             // Not every post has a thumbnail
@@ -51,9 +85,9 @@ public class RedditPost {
         return post;
     }
     
-    public static ArrayList<RedditPost> parseJson(JSONArray jsonArray) {
+    public static List<RedditPost> parseJson(JSONArray jsonArray) {
         if (jsonArray == null) return null;
-        ArrayList<RedditPost> posts = new ArrayList<RedditPost>();
+        List<RedditPost> posts = new ArrayList<RedditPost>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject json;
             try {
@@ -63,9 +97,7 @@ public class RedditPost {
                 continue;
             }
             RedditPost post = RedditPost.parseJson(json);
-            if (post != null) {
-                posts.add(post);
-            }
+            posts.add(post);
         }
         return posts;
     }

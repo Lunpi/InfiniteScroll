@@ -1,14 +1,14 @@
 package com.example.infinitescroll.reddit;
 
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.SyncHttpClient;
 
 public class RedditClient {
     private final String REDDIT_URL = "http://www.reddit.com/";
-    private AsyncHttpClient mClient;
+    private SyncHttpClient mClient;
     
     public RedditClient() {
-        mClient = new AsyncHttpClient();
+        mClient = new SyncHttpClient();
     }
     
     private String generateUrl(String subreddit, int currentPostsCount, String lastPostName) {

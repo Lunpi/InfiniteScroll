@@ -1,8 +1,8 @@
 package com.example.infinitescroll;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +12,13 @@ import android.widget.TextView;
 import com.example.infinitescroll.reddit.RedditPost;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentViewHolder> {
     
     public static final int LAYOUT_TITLE_OVER_THUMBNAIL = 0;
     public static final int LAYOUT_TITLE_BESIDE_THUMBNAIL = 1;
-    private ArrayList<RedditPost> mPosts = new ArrayList<RedditPost>();
+    private List<RedditPost> mPosts;
     private Context mContext;
     
     class ContentViewHolder extends RecyclerView.ViewHolder {
@@ -65,7 +65,7 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
         return mPosts.size();
     }
     
-    public void setPosts(ArrayList<RedditPost> posts) {
+    public void setPosts(List<RedditPost> posts) {
         mPosts = posts;
     }
 }

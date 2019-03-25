@@ -1,13 +1,13 @@
 package com.example.infinitescroll;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +15,9 @@ import android.widget.ProgressBar;
 
 import com.example.infinitescroll.reddit.RedditPost;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
+import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
 import static android.view.View.GONE;
 
 public class ScrollFragment extends Fragment {
@@ -30,9 +30,9 @@ public class ScrollFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mContentAdapter = new ContentAdapter(getContext());
         mModel = ViewModelProviders.of(this).get(ContentViewModel.class);
-        mModel.getPosts().observe(this, new Observer<ArrayList<RedditPost>>() {
+        mModel.getPosts().observe(this, new Observer<List<RedditPost>>() {
             @Override
-            public void onChanged(@Nullable ArrayList<RedditPost> posts) {
+            public void onChanged(@Nullable List<RedditPost> posts) {
                 if (posts == null) return;
                 mLoading.setVisibility(View.GONE);
                 mContentAdapter.setPosts(posts);
@@ -57,7 +57,7 @@ public class ScrollFragment extends Fragment {
                         && newState == SCROLL_STATE_IDLE
                         && mLoading.getVisibility() == GONE) {
                     mLoading.setVisibility(View.VISIBLE);
-                    mModel.getPosts();
+                    mModel.fetchPosts();
                 }
             }
         });
