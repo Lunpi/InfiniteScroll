@@ -15,12 +15,12 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentViewHolder> {
-    
+
     public static final int LAYOUT_TITLE_OVER_THUMBNAIL = 0;
     public static final int LAYOUT_TITLE_BESIDE_THUMBNAIL = 1;
     private List<RedditPost> mPosts;
     private Context mContext;
-    
+
     class ContentViewHolder extends RecyclerView.ViewHolder {
         private TextView mTitle;
         private ImageView mThumbnail;
@@ -30,7 +30,7 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
             mThumbnail = v.findViewById(R.id.thumbnail);
         }
     }
-    
+
     public ContentAdapter(Context context) {
         mContext = context;
     }
@@ -39,7 +39,7 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
     public int getItemViewType(int position) {
         return mPosts.get(position).getLayoutType();
     }
-    
+
     @Override
     public @NonNull
     ContentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -48,7 +48,7 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
         View v = LayoutInflater.from(mContext).inflate(layoutResource, parent, false);
         return new ContentViewHolder(v);
     }
-    
+
     @Override
     public void onBindViewHolder(@NonNull ContentViewHolder vh, int position) {
         vh.mTitle.setText(mPosts.get(position).getTitle());
@@ -59,12 +59,12 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
             Picasso.with(mContext).load(thumbnail).into(vh.mThumbnail);
         }
     }
-    
+
     @Override
     public int getItemCount() {
-        return mPosts.size();
+        return mPosts == null ? 0 : mPosts.size();
     }
-    
+
     public void setPosts(List<RedditPost> posts) {
         mPosts = posts;
     }

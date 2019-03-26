@@ -13,7 +13,7 @@ public abstract class PostDatabase extends RoomDatabase {
     public abstract PostDao postDao();
 
     private static volatile PostDatabase instance;
-    
+
     static PostDatabase getDatabase(final Context context) {
         if (instance == null) {
             synchronized (PostDatabase.class) {

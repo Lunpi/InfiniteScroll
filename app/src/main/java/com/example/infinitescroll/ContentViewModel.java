@@ -1,22 +1,22 @@
 package com.example.infinitescroll;
 
-import android.app.Application;
-
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.example.infinitescroll.reddit.RedditPost;
 
 import java.util.List;
 
-public class ContentViewModel extends AndroidViewModel {
-    private LiveData<List<RedditPost>> mPosts;
-    private ContentRepository contentRepo;
+import javax.inject.Inject;
 
-    public ContentViewModel(Application application) {
-        super(application);
-        contentRepo = new ContentRepository(application);
-        mPosts = contentRepo.getPosts();
+public class ContentViewModel extends ViewModel {
+    private ContentRepository mContentRepo;
+    private LiveData<List<RedditPost>> mPosts;
+
+    @Inject
+    public ContentViewModel(ContentRepository contentRepository) {
+        this.mContentRepo = contentRepository;
+        mPosts = mContentRepo.getPosts();
     }
 
     LiveData<List<RedditPost>> getPosts() {
@@ -24,6 +24,6 @@ public class ContentViewModel extends AndroidViewModel {
     }
 
     public void fetchPosts() {
-        contentRepo.fetchNewContent();
+        mContentRepo.fetchNewContent();
     }
 }

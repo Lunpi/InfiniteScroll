@@ -16,22 +16,26 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import javax.inject.Singleton;
+
+@Singleton
 class ContentRepository {
     private PostDao mPostDao;
     private LiveData<List<RedditPost>> mPosts;
-    public ContentRepository(Application application) {
+    private RedditClient mRedditClient;
+    public ContentRepository(Application application, RedditClient redditClient) {
         PostDatabase db = PostDatabase.getDatabase(application);
         checkDataCount(db);
         mPostDao = db.postDao();
         mPosts = mPostDao.load();
+        mRedditClient = redditClient;
     }
-    
+
     public LiveData<List<RedditPost>> getPosts() {
         return mPosts;
     }
-    
+
     private void fetchContent() {
-        RedditClient client = new RedditClient();
         final int postCount = (mPosts.getValue() == null || mPosts.getValue().isEmpty()) ? 0 : mPosts.getValue().size();
         String lastPostName = (postCount > 0) ? mPosts.getValue().get(postCount-1).getName() : "";
         JsonHttpResponseHandler httpResponseHandler = new JsonHttpResponseHandler() {
@@ -53,13 +57,13 @@ class ContentRepository {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
             }
         };
-        client.getPosts(httpResponseHandler, "", postCount, lastPostName);
+        mRedditClient.getPosts(httpResponseHandler, "", postCount, lastPostName);
     }
-    
+
     public void fetchNewContent() {
         new FetchAsyncTask(this).execute();
     }
-    
+
     private static class FetchAsyncTask extends AsyncTask<Void, Void, Void> {
         private final ContentRepository mRepo;
         FetchAsyncTask(ContentRepository repo) {
@@ -75,7 +79,7 @@ class ContentRepository {
     private void checkDataCount(PostDatabase db) {
         new CheckDataCountAsync(this, db).execute();
     }
-    
+
     private static class CheckDataCountAsync extends AsyncTask<Void, Void, Void> {
         private final PostDao mDao;
         private final ContentRepository mRepo;

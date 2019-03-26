@@ -1,7 +1,6 @@
 package com.example.infinitescroll;
 
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,19 +16,25 @@ import com.example.infinitescroll.reddit.RedditPost;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
 import static android.view.View.GONE;
 
 public class ScrollFragment extends Fragment {
     private ProgressBar mLoading;
     private ContentAdapter mContentAdapter;
-    private ContentViewModel mModel;
-    
+    @Inject
+    ContentViewModel mModel;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContentAdapter = new ContentAdapter(getContext());
-        mModel = ViewModelProviders.of(this).get(ContentViewModel.class);
+        DaggerViewModelComponent.builder()
+                .viewModelModule(new ViewModelModule(getActivity().getApplication(), this))
+                .build()
+                .inject(this);
         mModel.getPosts().observe(this, new Observer<List<RedditPost>>() {
             @Override
             public void onChanged(@Nullable List<RedditPost> posts) {
@@ -40,12 +45,12 @@ public class ScrollFragment extends Fragment {
             }
         });
     }
-    
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_scroll, container, false);
         mLoading = v.findViewById(R.id.loading);
-        
+
         RecyclerView content = v.findViewById(R.id.content);
         content.setLayoutManager(new LinearLayoutManager(getContext()));
         content.setAdapter(mContentAdapter);
