@@ -12,9 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.example.infinitescroll.di.DaggerViewModelComponent;
-import com.example.infinitescroll.di.ViewModelModule;
+import com.example.infinitescroll.viewModel.DaggerViewModelComponent;
+import com.example.infinitescroll.viewModel.ViewModelModule;
 import com.example.infinitescroll.reddit.RedditPost;
+import com.example.infinitescroll.viewModel.ContentViewModel;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class ScrollFragment extends Fragment {
                 .viewModelModule(new ViewModelModule(getActivity().getApplication(), this))
                 .build()
                 .inject(this);
-        mModel.getPosts().observe(this, new Observer<List<RedditPost>>() {
+        mModel.getRedditPosts().observe(this, new Observer<List<RedditPost>>() {
             @Override
             public void onChanged(List<RedditPost> posts) {
                 if (posts == null) return;
@@ -76,11 +77,11 @@ public class ScrollFragment extends Fragment {
                 if (!recyclerView.canScrollVertically(1)
                         && isIdle) {
                     mLoading.setVisibility(View.VISIBLE);
-                    mModel.fetchPosts();
+                    mModel.getContent();
                 } else if (!recyclerView.canScrollVertically(-1)
                         && isIdle) {
                     mLoadingCenter.setVisibility(View.VISIBLE);
-                    mModel.refreshPosts();
+                    mModel.refreshContent();
                 }
             }
         });

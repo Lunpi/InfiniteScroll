@@ -1,4 +1,4 @@
-package com.example.infinitescroll;
+package com.example.infinitescroll.model;
 
 import android.content.Context;
 
@@ -14,7 +14,7 @@ public abstract class PostDatabase extends RoomDatabase {
 
     private static volatile PostDatabase sInstance;
 
-    static PostDatabase getDatabase(final Context context) {
+    public static PostDatabase getDatabase(final Context context) {
         if (sInstance == null) {
             synchronized (PostDatabase.class) {
                 sInstance = Room.databaseBuilder(context.getApplicationContext(), PostDatabase.class, "post_database")

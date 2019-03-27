@@ -1,4 +1,6 @@
-package com.example.infinitescroll;
+package com.example.infinitescroll.viewModel;
+
+import com.example.infinitescroll.repository.ContentRepository;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;

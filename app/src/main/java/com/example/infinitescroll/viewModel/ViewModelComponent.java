@@ -1,4 +1,4 @@
-package com.example.infinitescroll.di;
+package com.example.infinitescroll.viewModel;
 
 import com.example.infinitescroll.ScrollFragment;
 

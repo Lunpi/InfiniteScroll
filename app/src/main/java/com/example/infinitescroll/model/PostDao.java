@@ -1,8 +1,7 @@
-package com.example.infinitescroll;
+package com.example.infinitescroll.model;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import static androidx.room.OnConflictStrategy.REPLACE;
