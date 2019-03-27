@@ -6,6 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+/**
+ * Implement Factory class to pass arguments into ViewModel constructor.
+ * Need to construct the repository and initialize the LiveData before observing. 
+ */
 public class ViewModelFactory implements ViewModelProvider.Factory {
     private ContentRepository mContentRepository;
     public ViewModelFactory(ContentRepository contentRepository) {

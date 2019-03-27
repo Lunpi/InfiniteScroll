@@ -3,9 +3,7 @@ package com.example.infinitescroll.viewModel;
 import android.app.Application;
 
 import com.example.infinitescroll.repository.ContentRepository;
-import com.example.infinitescroll.viewModel.ContentViewModel;
 import com.example.infinitescroll.ScrollFragment;
-import com.example.infinitescroll.viewModel.ViewModelFactory;
 import com.example.infinitescroll.reddit.RedditClient;
 
 import androidx.lifecycle.ViewModelProviders;

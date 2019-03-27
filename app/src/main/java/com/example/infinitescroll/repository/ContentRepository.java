@@ -29,14 +29,26 @@ public class ContentRepository {
         mRedditClient = redditClient;
         PostDatabase db = PostDatabase.getDatabase(application);
         mPostDao = db.postDao();
+        // Check the posts count in database when initializing this repository to get the first set of content ASAP.
         checkDataCount();
     }
 
-    public LiveData<List<RedditPost>> getRedditPosts() {
+    public LiveData<List<RedditPost>> loadRedditPostsFromDb() {
         mPostsInDb = mPostDao.load();
         return mPostsInDb;
     }
 
+    /**
+     * Tell the HTTP client to get contents. Right now just get HOTs in Reddit (five contents at a time).
+     * The ViewModel may request for refreshing contents or getting new contents.
+     * Both cases will eventually reach here.
+     * So use a boolean parameter to determine getting or refreshing contents.
+     * 
+     * If the ViewModel requests for refreshing, just don't set the "count" and the "after" in the URL.
+     * Otherwise, need to set the current posts count and the full name of the last post to get the sequential posts.
+     * 
+     * @param reset To determine refreshing or getting contents (true: refresh, false: get new content)
+     */
     void getPostsFromReddit(boolean reset) {
         final int postCount = (mPostsInDb.getValue() == null || reset) ?
                 0 : mPostsInDb.getValue().size();
@@ -74,6 +86,7 @@ public class ContentRepository {
     }
 
     public void refreshContent() {
+        // Need to re-initialize the HTTP client to avoid "Internal Server Error"
         mRedditClient = new RedditClient();
         new RefreshAsyncTask(this, mPostDao).execute();
     }

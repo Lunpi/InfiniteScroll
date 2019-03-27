@@ -35,6 +35,13 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
         mContext = context;
     }
 
+    /**
+     * Get the content layout type when creating the content view holder.
+     * 1. Image in the background with bottom-left title (default).
+     * 2. Title and image apart.
+     * @param position Position of content in the list
+     * @return One of the layout type (0: default, 1: apart).
+     */
     @Override
     public int getItemViewType(int position) {
         return mPosts.get(position).getLayoutType();
@@ -65,6 +72,11 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
         return mPosts == null ? 0 : mPosts.size();
     }
 
+    /**
+     * Update/Add contents in the list.
+     * Need to call notify methods to invoke onBindViewHolder.
+     * @param posts The contents we want to update/add
+     */
     public void setPosts(List<RedditPost> posts) {
         mPosts = posts;
     }

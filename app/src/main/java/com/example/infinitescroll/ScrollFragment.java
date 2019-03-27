@@ -39,10 +39,13 @@ public class ScrollFragment extends Fragment {
                 .viewModelModule(new ViewModelModule(getActivity().getApplication(), this))
                 .build()
                 .inject(this);
-        mModel.getRedditPosts().observe(this, new Observer<List<RedditPost>>() {
+        mModel.getLiveDataPosts().observe(this, new Observer<List<RedditPost>>() {
             @Override
             public void onChanged(List<RedditPost> posts) {
                 if (posts == null) return;
+                // Only update UI in the following conditions:
+                // 1. Contents are already cached and loaded into UI, and then users scroll up to refresh.
+                // 2. When the ViewModel gets new set of contents.
                 if (posts.isEmpty()) {
                     mLoadingCenter.setVisibility(View.VISIBLE);
                     if (mContentAdapter.getItemCount() > 0) {
@@ -74,6 +77,10 @@ public class ScrollFragment extends Fragment {
                 boolean isIdle = (newState == SCROLL_STATE_IDLE
                         && mLoadingCenter.getVisibility() == GONE
                         && mLoading.getVisibility() == GONE);
+                // Inform ViewModel to request for content when the following conditions meet:
+                // 1. Users reach the top/bottom of the list.
+                // 2. User's finger leaves the screen.
+                // 3. Finish loading contents.
                 if (!recyclerView.canScrollVertically(1)
                         && isIdle) {
                     mLoading.setVisibility(View.VISIBLE);
