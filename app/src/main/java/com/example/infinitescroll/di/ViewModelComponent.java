@@ -1,4 +1,6 @@
-package com.example.infinitescroll;
+package com.example.infinitescroll.di;
+
+import com.example.infinitescroll.ScrollFragment;
 
 import dagger.Component;
 

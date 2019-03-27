@@ -12,16 +12,16 @@ import androidx.room.RoomDatabase;
 public abstract class PostDatabase extends RoomDatabase {
     public abstract PostDao postDao();
 
-    private static volatile PostDatabase instance;
+    private static volatile PostDatabase sInstance;
 
     static PostDatabase getDatabase(final Context context) {
-        if (instance == null) {
+        if (sInstance == null) {
             synchronized (PostDatabase.class) {
-                instance = Room.databaseBuilder(context.getApplicationContext(), PostDatabase.class, "post_database")
+                sInstance = Room.databaseBuilder(context.getApplicationContext(), PostDatabase.class, "post_database")
                         .fallbackToDestructiveMigration()
                         .build();
             }
         }
-        return instance;
+        return sInstance;
     }
 }

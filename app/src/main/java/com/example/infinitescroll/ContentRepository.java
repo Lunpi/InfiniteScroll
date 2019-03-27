@@ -19,10 +19,11 @@ import java.util.List;
 import javax.inject.Singleton;
 
 @Singleton
-class ContentRepository {
+public class ContentRepository {
     private PostDao mPostDao;
     private LiveData<List<RedditPost>> mPosts;
     private RedditClient mRedditClient;
+
     public ContentRepository(Application application, RedditClient redditClient) {
         PostDatabase db = PostDatabase.getDatabase(application);
         checkDataCount(db);
@@ -35,8 +36,8 @@ class ContentRepository {
         return mPosts;
     }
 
-    private void fetchContent() {
-        final int postCount = (mPosts.getValue() == null || mPosts.getValue().isEmpty()) ? 0 : mPosts.getValue().size();
+    private void getPostsFromReddit(boolean reset) {
+        final int postCount = (mPosts.getValue() == null || reset) ? 0 : mPosts.getValue().size();
         String lastPostName = (postCount > 0) ? mPosts.getValue().get(postCount-1).getName() : "";
         JsonHttpResponseHandler httpResponseHandler = new JsonHttpResponseHandler() {
             @Override
@@ -60,19 +61,42 @@ class ContentRepository {
         mRedditClient.getPosts(httpResponseHandler, "", postCount, lastPostName);
     }
 
-    public void fetchNewContent() {
-        new FetchAsyncTask(this).execute();
+    public void getContent(boolean reset) {
+        new GetContentAsyncTask(this).execute(reset);
     }
 
-    private static class FetchAsyncTask extends AsyncTask<Void, Void, Void> {
+    private static class GetContentAsyncTask extends AsyncTask<Boolean, Void, Void> {
         private final ContentRepository mRepo;
-        FetchAsyncTask(ContentRepository repo) {
+        GetContentAsyncTask(ContentRepository repo) {
             mRepo = repo;
         }
         @Override
-        protected Void doInBackground(final Void... params) {
-            mRepo.fetchContent();
+        protected Void doInBackground(final Boolean... params) {
+            mRepo.getPostsFromReddit(params[0]);
             return null;
+        }
+    }
+
+    public void refreshPosts() {
+        mRedditClient = new RedditClient();
+        new RefreshAsyncTask(this, mPostDao).execute();
+    }
+
+    private static class RefreshAsyncTask extends AsyncTask<Void, Void, Void> {
+        private final ContentRepository mRepo;
+        private final PostDao mDao;
+        RefreshAsyncTask(ContentRepository repo, PostDao dao) {
+            mRepo = repo;
+            mDao = dao;
+        }
+        @Override
+        protected Void doInBackground(final Void... params) {
+            mDao.deleteAll();
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void v) {
+            mRepo.getContent(true);
         }
     }
 
@@ -90,7 +114,7 @@ class ContentRepository {
         @Override
         protected Void doInBackground(final Void... params) {
             if (mDao.checkDataCount() == 0) {
-                mRepo.fetchContent();
+                mRepo.getPostsFromReddit(true);
             }
             return null;
         }

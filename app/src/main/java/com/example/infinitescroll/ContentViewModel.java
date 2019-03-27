@@ -15,7 +15,7 @@ public class ContentViewModel extends ViewModel {
 
     @Inject
     public ContentViewModel(ContentRepository contentRepository) {
-        this.mContentRepo = contentRepository;
+        mContentRepo = contentRepository;
         mPosts = mContentRepo.getPosts();
     }
 
@@ -24,6 +24,10 @@ public class ContentViewModel extends ViewModel {
     }
 
     public void fetchPosts() {
-        mContentRepo.fetchNewContent();
+        mContentRepo.getContent(false);
+    }
+
+    public void refreshPosts() {
+        mContentRepo.refreshPosts();
     }
 }

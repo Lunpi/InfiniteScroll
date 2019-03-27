@@ -5,7 +5,7 @@
     android:layout_height="128dp"
     android:orientation="horizontal"
     android:background="@drawable/border">
-    
+
     <TextView
         android:id="@+id/title"
         android:layout_width="0dp"
@@ -18,7 +18,7 @@
         android:textSize="14sp"
         android:maxLines="7"
         android:ellipsize="end"/>
-    
+
     <ImageView
         android:id="@+id/thumbnail"
         android:contentDescription="@string/thumbnail_description"

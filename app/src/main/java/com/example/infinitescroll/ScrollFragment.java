@@ -3,15 +3,17 @@ package com.example.infinitescroll;
 import androidx.lifecycle.Observer;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.example.infinitescroll.di.DaggerViewModelComponent;
+import com.example.infinitescroll.di.ViewModelModule;
 import com.example.infinitescroll.reddit.RedditPost;
 
 import java.util.List;
@@ -22,6 +24,7 @@ import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
 import static android.view.View.GONE;
 
 public class ScrollFragment extends Fragment {
+    private ProgressBar mLoadingCenter;
     private ProgressBar mLoading;
     private ContentAdapter mContentAdapter;
     @Inject
@@ -37,11 +40,19 @@ public class ScrollFragment extends Fragment {
                 .inject(this);
         mModel.getPosts().observe(this, new Observer<List<RedditPost>>() {
             @Override
-            public void onChanged(@Nullable List<RedditPost> posts) {
+            public void onChanged(List<RedditPost> posts) {
                 if (posts == null) return;
-                mLoading.setVisibility(View.GONE);
-                mContentAdapter.setPosts(posts);
-                mContentAdapter.notifyItemRangeInserted(mContentAdapter.getItemCount(), posts.size());
+                if (posts.isEmpty()) {
+                    mLoadingCenter.setVisibility(View.VISIBLE);
+                    if (mContentAdapter.getItemCount() > 0) {
+                        mContentAdapter.setPosts(posts);
+                        mContentAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    hideProgressBar();
+                    mContentAdapter.setPosts(posts);
+                    mContentAdapter.notifyItemRangeInserted(mContentAdapter.getItemCount(), posts.size());
+                }
             }
         });
     }
@@ -49,7 +60,8 @@ public class ScrollFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_scroll, container, false);
-        mLoading = v.findViewById(R.id.loading);
+        mLoadingCenter = v.findViewById(R.id.loading_center);
+        mLoading = v.findViewById(R.id.loading_bottom);
 
         RecyclerView content = v.findViewById(R.id.content);
         content.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -58,14 +70,29 @@ public class ScrollFragment extends Fragment {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                boolean isIdle = (newState == SCROLL_STATE_IDLE
+                        && mLoadingCenter.getVisibility() == GONE
+                        && mLoading.getVisibility() == GONE);
                 if (!recyclerView.canScrollVertically(1)
-                        && newState == SCROLL_STATE_IDLE
-                        && mLoading.getVisibility() == GONE) {
+                        && isIdle) {
                     mLoading.setVisibility(View.VISIBLE);
                     mModel.fetchPosts();
+                } else if (!recyclerView.canScrollVertically(-1)
+                        && isIdle) {
+                    mLoadingCenter.setVisibility(View.VISIBLE);
+                    mModel.refreshPosts();
                 }
             }
         });
         return v;
+    }
+
+    private void hideProgressBar() {
+        if (mLoadingCenter != null && mLoadingCenter.getVisibility() != GONE) {
+            mLoadingCenter.setVisibility(GONE);
+        }
+        if (mLoading != null && mLoading.getVisibility() != GONE) {
+            mLoading.setVisibility(GONE);
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.example.infinitescroll;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import static androidx.room.OnConflictStrategy.REPLACE;
@@ -14,6 +15,8 @@ import java.util.List;
 public interface PostDao {
     @Insert(onConflict = REPLACE)
     void insert(RedditPost post);
+    @Query("DELETE FROM reddit_post_table")
+    void deleteAll();
     @Query("SELECT * FROM reddit_post_table")
     LiveData<List<RedditPost>> load();
     @Query("SELECT COUNT(*) FROM reddit_post_table")

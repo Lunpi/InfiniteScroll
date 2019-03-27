@@ -1,7 +1,11 @@
-package com.example.infinitescroll;
+package com.example.infinitescroll.di;
 
 import android.app.Application;
 
+import com.example.infinitescroll.ContentRepository;
+import com.example.infinitescroll.ContentViewModel;
+import com.example.infinitescroll.ScrollFragment;
+import com.example.infinitescroll.ViewModelFactory;
 import com.example.infinitescroll.reddit.RedditClient;
 
 import androidx.lifecycle.ViewModelProviders;
@@ -13,8 +17,8 @@ public class ViewModelModule {
     private Application mApplication;
     private ScrollFragment mScrollFragment;
     public ViewModelModule(Application application, ScrollFragment scrollFragment) {
-        this.mApplication = application;
-        this.mScrollFragment = scrollFragment;
+        mApplication = application;
+        mScrollFragment = scrollFragment;
     }
 
     @Provides
