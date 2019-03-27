@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="content_height">150dp</dimen>
+    <dimen name="content_padding">5dp</dimen>
+    <dimen name="text_image_margin">3dp</dimen>
+</resources>
