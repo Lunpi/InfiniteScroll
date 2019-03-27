@@ -15,7 +15,7 @@ public class RedditClient {
         String subredditUrl = subreddit.isEmpty() ? "" : "r/" + subreddit;
         String count = currentPostsCount == 0 ? "" : "&count=" + currentPostsCount;
         String after = "".equals(lastPostName) ? "" : "&after=" + lastPostName;
-        return REDDIT_URL + subredditUrl + ".json?limit=5" + count + after;
+        return REDDIT_URL + subredditUrl + "hot.json?limit=5" + count + after;
     }
 
     public void getPosts(JsonHttpResponseHandler handler, String subreddit, int currentPostsCount, String lastPostName) {
